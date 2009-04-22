@@ -1,0 +1,21 @@
+common: &common
+  host:           localhost
+  port:           3450
+  dce_id:        -1000
+  beanstalk_port: 7777
+  rhouse_port:    6666
+  sleep_interval:    1
+  
+development:
+  <<:             *common
+  host:           192.168.0.78
+
+test:
+  <<:             *common  
+    
+production:
+  <<:             *common  
+
+production_local:
+  <<:             *common
+  host:           192.168.0.78  

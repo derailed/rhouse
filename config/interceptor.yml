@@ -1,0 +1,23 @@
+common: &common
+  port:           3450
+  dce_id:        -1000
+  beanstalk_port: 7777
+  sleep_interval: 30
+  events:
+    140: 1  # Camera
+    73:  1  # Lighting
+    84:  2  # Security
+    83:  2  # Climate
+    13:  2  # Media Players
+  
+development:
+  host:  192.168.0.78
+  <<:   *common
+  
+test:
+  host:  localhost
+  <<:   *common
+      
+production:
+  host: localhost
+  <<:   *common

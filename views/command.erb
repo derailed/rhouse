@@ -1,0 +1,13 @@
+<div class="info">
+  <%= @location %>/<%=@device%> - <i><%=@command%></i> -- <b><%=@result%></b>
+  <center>
+    <table width='50%' border="0" style="margin-top:10px">
+    <% count = 0; while count < @args.size do %>
+      <tr style="font-size:0.4em;">
+        <td><%=@args[count]%></td>
+        <td><%=@args[count+1]%></td>
+      </tr>
+    <% count+=2;end %>  
+    </table>
+  </center>
+</div>

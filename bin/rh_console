@@ -1,0 +1,60 @@
+#!/usr/bin/env ruby
+
+$:.unshift File.join( File.dirname(__FILE__), %w[.. lib] )
+
+require 'rubygems'
+require "rhouse"
+require "irb"
+
+begin
+  gem "main", ">= 2.8.2"
+  require "main"
+rescue
+  Gem::LoadError
+  STDERR.puts "need the main gem to run ci_console. sudo gem install main"
+end
+
+Main::Softspoken.off!
+
+Main do
+  description <<-EOS
+  Rhouse console - IRB console for pluto database access
+  EOS
+
+  argument "environment" do
+    description "The environment in which to initialize the console"
+    default     ENV["RH_ENV"] || "test"
+    attribute   "environment"
+  end
+
+  option "log-file=filename" do
+    description "Log filename, defaults to STDOUT"
+    default     STDOUT
+    attribute   "log_file"
+  end
+
+  option "log-level=info" do
+    description "Log level, defaults to info"
+    default     "info"
+    attribute   "log_level"
+  end
+
+  option "colorize=true" do
+    description "Whether or not to colorize ActiveRecord debug output, default true"
+    default     true
+    attribute   { |p| p.value != "false" }
+  end
+
+  run do    
+    Rhouse.initialize(
+      :environment      => environment,
+      :requires_db      => true,
+      :log_file         => log_file,
+      :log_level        => :info,
+      :colorize_logging => colorize
+    )
+    Rhouse.dump    
+    IRB.start(__FILE__)
+  end
+end
+

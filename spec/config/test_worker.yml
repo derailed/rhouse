@@ -1,0 +1,11 @@
+common: &common
+  host:           localhost  
+  beanstalk_port: 7777
+  rhouse_port:    4567
+  requires_db:    true
+  log_level:      :debug
+  consume_events: true
+    
+test:
+  <<:             *common  
+  db_env:         :test

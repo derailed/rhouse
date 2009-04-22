@@ -1,0 +1,48 @@
+#!/usr/bin/env ruby
+
+$:.unshift File.join( File.dirname(__FILE__), %w[.. lib] )
+
+require 'rubygems'
+require "rhouse"
+require 'main'
+
+Main::Softspoken.off!
+Main do
+  description <<-EOS
+  Sends device commands via the RHouse web service.
+  EOS
+
+  argument "environment" do
+    description "The environment in which to run the utility"
+    default     ENV["RH_ENV"] || "test"
+    attribute   "environment"
+  end
+
+  argument "device_id" do
+    description "The device to send a message to"
+    attribute   "device_id"    
+  end
+
+  argument "command_id" do
+    description "The ID of the command to send to device"
+    attribute   "command_id"
+  end
+  
+  argument "parameters" do
+    description "The parameters list"
+    cast :list_of_integer
+    arity -1
+    attribute 'parameters'
+  end
+  
+  run do    
+    Rhouse.initialize( :environment => environment, :log_file => $stdout, :log_level => :info, :requires_db => true )
+    # Rhouse.dump
+    args = { :device_id => device_id, :command_id => command_id }    
+    while parameters.flatten!
+      args[parameters.shift] = parameters.shift
+    end
+    Rhouse::WsClient.new.send_cmd( args )
+  end
+end
+

@@ -1,0 +1,25 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <title><%=options[:title]%></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="/stylesheets/rhouse.css" type="text/css" media='screen' />
+  </head>
+
+  <body id="body">
+      <div id="header">
+        <img src="/images/RHouse1.png" style="border:none;height=150px;width=400px"/>
+      </div>
+      <div id="main">
+        <%= yield %>
+      </div>
+
+      <div id="footer">
+        <div style="margin-top:10px;text-align:center;">
+          copyright © 2009 
+          <a href="http://www.liquidrail.com" style="vertical-align:bottom;color:#a5a3a3">LiquidRail LLC</a>
+          . All rights reserved
+        </div>
+      </div>
+  </body>  
+</html>

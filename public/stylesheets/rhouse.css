@@ -1,0 +1,35 @@
+body {
+  background:     #f7f7f7;
+  color:          gray;
+  font-family:    Tahoma,Arial,sans-serif;
+  font-style:     normal;
+  font-style:     normal;
+  letter-spacing: 0px;
+}
+
+h1 {
+  color: #434343;
+}
+
+div.error {
+  margin-top:  3em;
+  font-size:   2.5em;
+  font-weight: bold;
+  text-align:  center;
+  color:       #660000;
+}
+
+div.info {
+  margin-top:  3em;
+  font-size:   2.0em;
+  font-weight: bold;
+  text-align:  center;
+  color:       #202020;
+}
+
+div#footer {
+  position:       absolute;
+  bottom:         10px;
+  width:          98%;
+  letter-spacing: 10px;
+}

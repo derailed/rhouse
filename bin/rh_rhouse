@@ -1,0 +1,108 @@
+#!/usr/bin/env ruby
+require 'rubygems'
+require 'sinatra'
+require 'base64'
+require 'active_record'
+
+$: << File.expand_path( File.join( File.dirname(__FILE__), %w[.. lib] ) )
+
+require 'rhouse'
+
+# Force reload !!
+load File.expand_path( File.join(File.dirname(__FILE__), %w[.. lib rhouse command.rb] ) )
+
+# -----------------------------------------------------------------------------
+# Forces sinatra to run as gem exec
+set :run        , true
+set :port       , 6666
+set :environment, ENV['RH_ENV'] || 'development'
+set :app_file   , __FILE__
+set :reload     , true
+
+enable :sessions
+
+# -----------------------------------------------------------------------------
+# General configuration
+set :title , "R H O U S E"
+set :public, File.join( File.dirname(__FILE__), %w[.. public] )
+set :views , File.join( File.dirname(__FILE__), %w[.. views] )
+
+# =============================================================================
+# connects to pluto db
+configure do
+  Rhouse.initialize( 
+    :environment => ENV['RH_ENV'] || 'development', 
+    :requires_db => true,
+    :log_level   => :info,
+    :log_file    => ENV['RH_ENV'] == 'production' ? '/var/log/pluto/RH_Rhouse.log' : $stdout )
+end
+
+# =============================================================================
+# error handling
+error do
+  @error = 'Invalid command: ' + request.env['sinatra.error'].message
+  erb :error
+end
+
+# -----------------------------------------------------------------------------
+# send a command to the dce router via a post command
+post '/cmd' do  
+  Rhouse::Command.send_raw( keys_to_symbols( params ) ).strip
+end
+
+# -----------------------------------------------------------------------------
+# Supports Human interface for sending out commands to the router via http get
+get '/cmd/:location/:device/:command' do
+  @location = params[:location]
+  @device   = params[:device]
+  @command  = params[:command]
+  @args     = {}
+  
+  @result   = Rhouse::Command.send_human( @location, @device, @command, @args ).strip
+  erb :command
+end
+
+# -----------------------------------------------------------------------------
+# Supports Human interface for sending out commands to the router via http get
+get '/cmd/:location/:device/:command/*' do
+  @location = params[:location]
+  @device   = params[:device]
+  @command  = params[:command]
+  args      = params[:splat].first.split( "/" )
+  @args     = handle_specials( args )    
+  
+  @result   = Rhouse::Command.send_human( @location, @device, @command, @args ).strip
+  erb :command
+end
+
+# =============================================================================
+helpers do
+  # converts hash keys to symbols
+  def keys_to_symbols( params )
+    args = {}
+    params.each_pair do |k,v|
+      args[k.to_sym] = v
+    end
+    args
+  end
+
+  # check for mediaURL in args to assemble params correctly
+  def handle_specials( args )
+    params = []
+    while !args.empty? do
+      param = args.shift 
+      if param == 'MediaURL'
+        params << param
+        # consumes the rest of the tokens
+        uri = []
+        while !args.empty? do
+          uri << args.shift
+        end
+        params << "\"#{uri.compact.join( "/" )}\""
+      else
+        params << param
+      end
+    end
+    params
+  end
+end

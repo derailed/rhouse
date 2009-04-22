@@ -1,0 +1,37 @@
+# -----------------------------------------------------------------------------
+# Adapter
+mysql: &mysql
+  adapter:  mysql
+  encoding: utf8
+
+# -----------------------------------------------------------------------------
+# Hosts
+mysql_local: &mysql_local
+  <<:       *mysql
+  host:     localhost  
+  username: root
+
+mysql_eee: &mysql_eee
+  <<:       *mysql
+  database: pluto_main
+  username: admin
+  password: admin
+    
+# -----------------------------------------------------------------------------
+# Environments
+
+development:
+  <<:       *mysql_local
+  database: pluto_dev
+ 
+test:
+  <<:       *mysql_local
+  database: pluto_test
+ 
+production_local:
+  <<:       *mysql_eee
+  host:     rhouse
+  
+production:
+  <<:       *mysql_eee
+  host:     localhost

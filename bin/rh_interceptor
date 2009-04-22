@@ -1,0 +1,59 @@
+#!/usr/bin/env ruby
+
+# -----------------------------------------------------------------------------
+# Intercepts DCE router events and pushes them on the queue
+#
+# Author: Fernand
+# -----------------------------------------------------------------------------
+require 'rubygems'
+require 'main'
+
+$: << File.expand_path(File.join(File.dirname(__FILE__),"..","lib"))
+
+require 'rhouse'
+
+Main {
+  description <<-EOS
+  Rhouse Interceptor - Connects to the DCE router and catch various device events
+  EOS
+  
+  option( 'device_id=id', 'd' ) {
+    description "The database id of the event interceptor device"
+    cast        :int
+    attribute   "interceptor"
+    argument    :required
+  }
+  
+  option( 'router=localhost', 'r' ) {
+    default     'localhost'
+    attribute   'router'
+    argument    :required    
+  }
+  
+  option( 'log=log_file', 'l' ) {
+    default     '/var/log/pluto/RH_Interceptor.log'
+    attribute   'log'
+    argument    :required    
+  }
+  
+  environment( 'RH_ENV' ) {
+    default     'production'
+    synopsis    'export RH_ENV=production'
+    attribute   "environment"    
+    argument    :required    
+  }
+    
+  def run
+    Rhouse.initialize(     
+      :environment => environment, 
+      :needs_db    => false,
+      :log_level   => :debug,
+      :log_file    => log
+    )
+    # Rhouse.dump
+    Rhouse::EventListener.new( :router => router, :interceptor => interceptor ).listen_for_events
+    exit( 0 )    
+  end  
+}
+
+
