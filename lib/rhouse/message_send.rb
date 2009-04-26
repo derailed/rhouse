@@ -28,6 +28,7 @@ module Rhouse
     def send_command( command )
       cmd = "MESSAGET #{command.size}\n#{command}\n"
       logger.debug( ">>> Sending cmd #{cmd.gsub( /\n/, ' ' )}" )
+      
       out_socket.send( cmd , 0 )
       result = out_socket.recv(100)
       logger.debug( "<<< Result ==> #{result}" )

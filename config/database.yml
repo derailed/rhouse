@@ -13,13 +13,13 @@ mysql_local: &mysql_local
 
 mysql_eee: &mysql_eee
   <<:       *mysql
-  database: pluto_main
   username: admin
   password: admin
     
 # -----------------------------------------------------------------------------
 # Environments
 
+# Pluto Main Db
 development:
   <<:       *mysql_local
   database: pluto_dev
@@ -30,8 +30,29 @@ test:
  
 production_local:
   <<:       *mysql_eee
+  database: pluto_main
   host:     rhouse
   
 production:
   <<:       *mysql_eee
+  database: pluto_main  
   host:     localhost
+  
+# Pluto Media Db
+media_development:
+  <<:       *mysql_local
+  database: media_dev
+ 
+media_test:
+  <<:       *mysql_local
+  database: media_test
+ 
+media_production_local:
+  <<:       *mysql_eee
+  database: pluto_media  
+  host:     rhouse
+  
+media_production:
+  <<:       *mysql_eee
+  host:     localhost
+  database: pluto_media  

@@ -2,6 +2,7 @@
 require 'rubygems'
 require 'sinatra'
 require 'base64'
+require 'cgi'
 require 'active_record'
 
 $: << File.expand_path( File.join( File.dirname(__FILE__), %w[.. lib] ) )
@@ -33,7 +34,7 @@ configure do
   Rhouse.initialize( 
     :environment => ENV['RH_ENV'] || 'development', 
     :requires_db => true,
-    :log_level   => :info,
+    :log_level   => :debug,
     :log_file    => ENV['RH_ENV'] == 'production' ? '/var/log/pluto/RH_Rhouse.log' : $stdout )
 end
 
@@ -73,6 +74,18 @@ get '/cmd/:location/:device/:command/*' do
   
   @result   = Rhouse::Command.send_human( @location, @device, @command, @args ).strip
   erb :command
+end
+
+# -----------------------------------------------------------------------------
+# Locates music file and get the cover art for it
+get '/song/artwork/:uri' do
+  uri = Base64.decode64( CGI.unescape( params[:uri] ) )
+  Rhouse::Helpers::Audio.media_info( uri, false )[:cover]
+end
+
+# -----------------------------------------------------------------------------
+get '/album/artwork/:album_id' do
+  Rhouse::Helpers::Audio.find_album_cover( params[:album_id] )
 end
 
 # =============================================================================

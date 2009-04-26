@@ -140,5 +140,9 @@ module Rhouse
       logger << "-" * 120 + "\n"
     end
   end  
+  
+  require Rhouse.libpath(*%w[core_ext active_record base])
+  require Rhouse.libpath(*%w[core_ext active_record connection_adapter])
+  
   require_all_libs_relative_to( File.join( File.dirname(__FILE__), %w[rhouse] ) )        
 end

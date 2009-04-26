@@ -71,7 +71,7 @@ module Rhouse
         if value and value.captures
           params[param.param_id] = cast_to_type( param.param_type, value.captures.first )
         else
-          raise "Unable to parse event parameter for event `#{command_id} parameter #{param.param_id}"
+          Rhouse.logger.error "Unable to parse event parameter for event `#{command_id} parameter #{param.param_id}"
         end
       end
       params

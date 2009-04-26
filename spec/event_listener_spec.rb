@@ -46,7 +46,7 @@ describe Rhouse::EventListener do
       
       @interceptor.should_receive( :trap_signals ).once
       @interceptor.should_receive( :connect ).once
-      @interceptor.should_receive( :register_messages ).once
+      @interceptor.should_receive( :register_events ).once
       @interceptor.should_receive( :listen ).once
       @interceptor.should_receive( :close ).once                
       @interceptor.listen_for_events
@@ -108,7 +108,7 @@ describe Rhouse::EventListener do
       @out_socket.should_receive( :send ).with( "MESSAGET 22\n100 -1000 8 0 5 1 4 73\n", 0 ).exactly(1).and_return( "OK\n" )
       @out_socket.should_receive( :send ).with( "MESSAGET 23\n100 -1000 8 0 5 1 4 140\n", 0 ).exactly(1).and_return( "OK\n" )
       @out_socket.should_receive( :recv ).with( 100 ).exactly(5).and_return( "OK\n" )    
-      @interceptor.send( :register_messages )
+      @interceptor.send( :register_events )
     end
   end
     
@@ -128,7 +128,7 @@ describe Rhouse::EventListener do
       @interceptor.should_receive( :sleep ).once      
       @interceptor.should_receive( :close ).once
       @interceptor.should_receive( :connect ).once
-      @interceptor.should_receive( :register_messages ).once      
+      @interceptor.should_receive( :register_events ).once      
       @interceptor.send( :process_shutdown, msg )
     end
     

@@ -43,7 +43,7 @@ module Rhouse
     def listen_for_events
       trap_signals
       connect
-      register_messages 
+      register_events
       listen
       close
     end
@@ -124,8 +124,8 @@ module Rhouse
         raise "Unable to #{msg}" unless resp.index( /^OK/)
       end
       
-      # register specific events for interception
-      def register_messages
+      # Tells the router that we are interested in certain events
+      def register_events
         events = config( :events )
         events.each_pair do |event_id, message_type|
           logger.debug "Registering for message intercepts #{event_id} - #{message_type}"
@@ -193,7 +193,7 @@ module Rhouse
         logger.debug "Sleeping for #{config(:sleep_interval)} secs..."
         sleep( config(:sleep_interval) )
         connect
-        register_messages        
+        register_events        
       end
       
       # listen for event notifications
@@ -219,7 +219,7 @@ module Rhouse
             puts "Sleeping..."
             sleep( config(:sleep_interval) )
             connect
-            register_messages
+            register_events
           end
           break if Rhouse.test_env?
         end

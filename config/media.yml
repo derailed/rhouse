@@ -1,0 +1,13 @@
+testing: &testing
+  music_depot: ../test/music
+
+mac: &mac
+  music_depot: ../../../../../Music/iTunes/iTunes Music/
+
+eeebox: &eeebox
+  music_depot: /home/public/data/audio
+    
+test:             *testing
+development:      *mac
+production:       *eeebox
+production_local: *mac
