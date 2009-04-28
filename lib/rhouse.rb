@@ -2,7 +2,7 @@
 # Configures logging, database connection and various paths
 module Rhouse 
   # Gem version
-  VERSION   = '0.0.1'
+  VERSION   = '0.0.3'
   # Root path of rhouse
   PATH      = ::File.expand_path(::File.join(::File.dirname(__FILE__), *%w[..]))
   # Lib path

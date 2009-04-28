@@ -44,7 +44,7 @@ module Rhouse
       Rhouse.logger.debug( "Got Response : '#{result.http_body}'" )
       result.http_body
     rescue Errno::ECONNREFUSED
-      raise "Could not connect to RHouse service"        
+      raise "Could not connect to RHouse service in #{Rhouse.environment}"        
     end  
 
     # =========================================================================    

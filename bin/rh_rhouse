@@ -78,18 +78,31 @@ end
 
 # -----------------------------------------------------------------------------
 # Locates music file and get the cover art for it
-get '/song/artwork/:uri' do
-  uri = Base64.decode64( CGI.unescape( params[:uri] ) )
-  Rhouse::Helpers::Audio.media_info( uri, false )[:cover]
+get '/song/artwork/:uri/:album_id' do
+  result = Rhouse::MemCache.cache_get( params[:album_id] )
+  Rhouse.logger.debug( "CACHE HIT on #{params[:album_id]}" ) if result
+  unless result
+    uri    = Base64.decode64( CGI.unescape( params[:uri] ) )    
+    result = Rhouse::Helpers::Audio.media_info( uri, false )[:cover]
+    Rhouse::MemCache.cache_set( params[:album_id], result )
+  end
+  result
 end
 
 # -----------------------------------------------------------------------------
 get '/album/artwork/:album_id' do
-  Rhouse::Helpers::Audio.find_album_cover( params[:album_id] )
+  result = Rhouse::MemCache.cache_get( params[:album_id] )  
+  Rhouse.logger.debug( "CACHE HIT on #{params[:album_id]}" ) if result  
+  unless result
+    result = Rhouse::Helpers::Audio.find_album_cover( params[:album_id] )
+    Rhouse::MemCache.cache_set( params[:album_id], result )
+  end
+  result
 end
 
 # =============================================================================
 helpers do
+     
   # converts hash keys to symbols
   def keys_to_symbols( params )
     args = {}
